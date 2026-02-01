@@ -4,7 +4,7 @@ import tensorflow_hub as hub
 import librosa
 import csv
 
-# Hardcoded general categories to ignore
+# General categories to ignore (we want specific outputs)
 GENERAL_LABELS = [
     "Animal",
     "Domestic animals, pets",
@@ -18,7 +18,7 @@ GENERAL_LABELS = [
 ]
 
 def load_audio(file_path):
-    """Load audio and resample to 16kHz."""
+    """Load audio file"""
     waveform, sr = librosa.load(file_path, sr=None)
     waveform = librosa.resample(waveform, orig_sr=sr, target_sr=16000)
     return waveform
@@ -53,14 +53,14 @@ def recognize_sound(audio_file_path, top_n=10):
     mean_scores = scores.mean(axis=0)
     top_indices = mean_scores.argsort()[-top_n:][::-1]
 
-    # Print full ranked list
+    # Print full list
     print("Top detected sounds:")
     for i in top_indices:
         label = class_names[i]
         confidence = mean_scores[i]
         print(f"- {label} ({confidence:.3f})")
 
-    # Hardcoded filter: ignore general categories
+    #  ignore general categories
     leaf_candidates = []
     for i in top_indices:
         label = class_names[i].strip()
